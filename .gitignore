@@ -1,0 +1,23 @@
+
+# Maven build output
+target/
+
+# Java compiled files
+*.class
+
+# Logs
+*.log
+logs/
+
+# Test execution output
+test-output/
+screenshots/
+
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# IDE-specific settings
+.idea/
+*.iml
