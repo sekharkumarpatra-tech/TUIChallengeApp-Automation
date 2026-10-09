@@ -1,1 +1,1 @@
-APK files for the TUI challenge application 
+APK upload folder for TUI challenge 
