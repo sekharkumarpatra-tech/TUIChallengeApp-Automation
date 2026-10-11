@@ -1,94 +1,83 @@
-# TUI Challenge App – Mobile Test Automation
+# TUI Challenge App – Mobile Test Automation Framework
 
 ## 1. Project Overview
 
-This project automates selected mobile application scenarios for the TUI Challenge application using Appium, Java, Maven, Cucumber BDD, and the Page Object Model (POM).
+This project contains a mobile test automation framework for the TUI Challenge Android application. It uses Appium, Java, Maven, Cucumber BDD, TestNG, and the Page Object Model (POM).
 
-The framework is designed to support maintainable, reusable, and readable mobile automation tests.
+The framework is designed to provide reusable mobile automation components, readable BDD scenarios, externalized test data, automated test execution, and HTML reporting.
 
 ## 2. Technology Stack
 
 - Java 21
 - Maven
 - Appium Java Client
-- Appium Server
+- Selenium WebDriver
 - Cucumber BDD
 - TestNG
-- Selenium
-- Android Debug Bridge (ADB)
+- Jackson for JSON test data
 - Git and GitHub
+- GitHub Actions with a self-hosted Windows runner
 
-## 3. Framework Features
-
-- Page Object Model for separating page actions from test logic
-- Cucumber feature files written in Gherkin
-- Reusable step definitions and utility methods
-- Maven-based test execution
-- Externalized test data
-- Cucumber HTML reporting
-- Test categorization using Cucumber tags
-- Failure screenshots and execution logs, where configured
-- Retry support for transient failures, where configured
-
-## 4. Project Structure
+## 3. Framework Structure
 
 ```text
 TUIChallengeApp-Automation/
+├── .github/
+│   └── workflows/
+│       └── maven-tests.yml
 ├── src/
-│   ├── test/
-│   │   ├── java/
-│   │   │   └── com/tui/
-│   │   │       ├── runners/
-│   │   │       ├── stepdefinitions/
-│   │   │       ├── pages/
-│   │   │       ├── hooks/
-│   │   │       └── utilities/
-│   │   └── resources/
-│   │       ├── features/
-│   │       └── testdata/
-├── pom.xml
-├── README.md
+│   └── test/
+│       ├── java/
+│       │   └── com/tui/
+│       │       ├── base/
+│       │       ├── driver/
+│       │       ├── listeners/
+│       │       ├── pages/
+│       │       ├── runners/
+│       │       ├── stepdefinitions/
+│       │       └── utils/
+│       └── resources/
+│           ├── config/
+│           ├── features/
+│           ├── locators/
+│           └── testdata/
 ├── DECISIONS.md
-└── .gitignore
+├── README.md
+├── pom.xml
+└── testng.xml
 ```
 
-*Note: This is the intended structure. Update the folder names to match the actual project.*
+## 4. Prerequisites
 
-## 5. Prerequisites
+Install and configure the following:
 
-Install and configure:
-
-1. Java JDK 21
-2. Maven
-3. Node.js and Appium
-4. Appium's UiAutomator2 driver
-5. Android SDK and ADB
-6. An Android emulator or a connected Android device
-7. Git
+1. Java Development Kit (JDK) 21.
+2. Apache Maven.
+3. Node.js and Appium Server.
+4. Appium's UiAutomator2 driver for Android.
+5. Android SDK Platform Tools, including ADB.
+6. An Android device or emulator with USB debugging enabled where applicable.
+7. Git.
 
 Verify the installations:
 
 ```bash
 java -version
 mvn -version
-adb devices
+node --version
 appium --version
+adb version
 ```
 
-## 6. Application Configuration
+Install the Android driver if it is not already installed:
 
-Configure the application package, activity, device details, and Appium server URL using the project's configuration files.
+```bash
+appium driver install uiautomator2
+```
 
-Ensure that:
-- The Android device or emulator is running.
-- USB debugging is enabled for a physical device.
-- The device appears in `adb devices`.
-- The Appium server is running.
-- The application APK is available at the configured path, if the framework installs it automatically.
+Use compatible versions of Appium, its driver, and the Appium Java client.
 
-Do not commit credentials, access tokens, or other secrets.
-
-## 7. How to Run the Tests
+## 5. Clone the Repository
 
 Clone the repository:
 
@@ -97,54 +86,164 @@ git clone https://github.com/sekharkumarpatra-tech/TUIChallengeApp-Automation.gi
 cd TUIChallengeApp-Automation
 ```
 
-Start Appium in a separate terminal:
+## 6. Configure the Android Device
+
+Connect the Android device using USB and enable Developer Options and USB debugging.
+
+Verify that ADB recognizes the device:
 
 ```bash
-appium
+adb devices
 ```
 
-Run the test suite:
+The device should appear with the status `device`.
+
+Obtain the application's package and launchable activity using Android SDK tools or the application's supplied details. Configure the correct values for the installed APK.
+
+Start Appium:
+
+```bash
+appium --address 127.0.0.1 --port 4723
+```
+
+Keep the Appium server running while executing tests.
+
+## 7. Configure the Framework
+
+Edit:
+
+`src/test/resources/config/config.properties`
+
+Provide the required configuration values for the target environment, including:
+
+- `platformName`
+- `appiumServerUrl`
+- `androidAutomationName`
+- `androidDeviceName`
+- `androidAppPackage`
+- `androidAppActivity`
+- `androidPlatformVersion` (optional)
+
+Use the exact property names expected by `BaseTest.java`. Do not commit credentials, access tokens, or other secrets.
+
+The current `BaseTest` implementation supports Android execution. iOS execution requires additional configuration and validation before it can be used.
+
+## 8. Execute the Tests
+
+Run the complete suite from the project root:
 
 ```bash
 mvn clean test
 ```
 
-Run tests by Cucumber tag, if tag filtering is configured:
+Maven compiles the project, executes the configured TestNG/Cucumber tests, and generates the configured test reports.
+
+For additional Maven output:
 
 ```bash
-mvn clean test -Dcucumber.filter.tags="@smoke"
+mvn clean test -e
 ```
 
-## 8. Test Scenarios
+## 9. Cucumber HTML Report
 
-The automated scenarios cover selected high-value application workflows. The final suite should contain exactly five distinct scenarios chosen to maximize release confidence.
+After a successful execution, open:
 
-Document the five scenarios here after confirming the final feature file.
+`target/cucumber-reports/cucumber.html`
 
-## 9. Test Reports and Evidence
+The report contains the Cucumber execution results for the run. The `target` directory is generated output and may be recreated by `mvn clean test`.
 
-After execution, review the Maven output and the generated test reports.
+For submission evidence, copy the final report to the designated evidence folder after the final test run.
 
-The expected Cucumber HTML report location is:
+## 10. Framework Design
 
-```text
-target/cucumber-reports/cucumber.html
+### Page Object Model
+
+Page classes encapsulate screen locators and user interactions. Step definitions call page methods instead of duplicating locator logic.
+
+### Driver Management
+
+`DriverFactory` creates and manages Appium drivers using `ThreadLocal<AppiumDriver>`. This supports separate driver references per thread, but parallel execution must also use independent device sessions and be validated before it is considered supported.
+
+### Reusable Utilities
+
+The framework includes utilities for locator reading, test-data reading, waits, and screenshots. Each utility should be maintained only if it is used by the framework.
+
+### Retry Handling
+
+TestNG retry handling is configured through `RetryListener` and `RetryAnalyzer`. Retries should be used for controlled recovery from transient failures, not to hide genuine defects.
+
+### External Test Data
+
+JSON test data is maintained under:
+
+`src/test/resources/testdata/login-data.json`
+
+Test steps should load and use this data through `TestDataReader`, with meaningful assertions against expected application behavior.
+
+## 11. GitHub Actions CI
+
+The project contains a workflow at:
+
+`.github/workflows/maven-tests.yml`
+
+The current CI setup uses a self-hosted Windows runner because Android automation requires access to the Android device and local Appium environment.
+
+To execute the workflow in the current setup:
+
+1. Connect the Android device and confirm `adb devices` shows it as `device`.
+2. Start the Appium server.
+3. Start the configured self-hosted runner from its runner directory using `run.cmd`.
+4. Trigger the GitHub Actions workflow.
+5. Review the workflow logs and test results.
+
+The Windows runner must remain available during the job. CI success on this setup does not, by itself, demonstrate execution on a cloud device or parallel Android/iOS execution.
+
+## 12. Execution Evidence
+
+Store final submission evidence under `evidence/`, where practical:
+
+- Final Cucumber HTML report.
+- Test execution logs.
+- Screenshots relevant to test results or failures.
+- GitHub Actions workflow result or screenshot.
+
+Capture evidence after the final scenario selection and successful test execution. Do not include passwords, tokens, or other sensitive information.
+
+## 13. Current Scope and Limitations
+
+- Android execution is the current implemented platform.
+- The framework must be verified against exactly five selected scenarios for the final assessment submission.
+- Parallel execution requires separate device sessions and successful concurrency validation.
+- iOS and cloud-device execution must not be claimed as implemented until they have been configured and tested.
+
+## 14. Troubleshooting
+
+### Device not detected
+
+```bash
+adb devices
 ```
 
-Confirm that the configured reporting plugin generates the report at this location. Capture screenshots and logs for failed tests where supported.
+Check the USB cable, debugging authorization, and device status.
 
-## 10. Troubleshooting
+### Appium connection failure
 
-- **Device not detected:** Run `adb devices` and verify USB debugging or emulator status.
-- **Appium connection failure:** Confirm that the Appium server is running at the configured URL and port.
-- **Session creation failure:** Verify device capabilities, app package, activity, and installed Appium drivers.
-- **Test compilation failure:** Check Java and Maven versions and run `mvn clean test`.
-- **Missing report:** Review the Cucumber reporting configuration and Maven test output.
+Confirm that Appium is running at the configured URL and port.
 
-## 11. Design and Future Enhancements
+### Application launch failure
 
-Refer to `DECISIONS.md` for architecture decisions, scenario selection rationale, AI-assisted development notes, and future improvements.
+Validate the package name, activity name, installed APK, and device compatibility.
 
-## 12. Repository
+### Configuration error
 
-GitHub: https://github.com/sekharkumarpatra-tech/TUIChallengeApp-Automation
+Confirm that `config/config.properties` is present on the classpath and that the required property names and values are correct.
+
+### Report not found
+
+Review the Maven output and confirm that the configured Cucumber HTML report path matches the location you are checking.
+
+## 15. Maintainer
+
+Sekhar Patra
+
+Repository: https://github.com/sekharkumarpatra-tech/TUIChallengeApp-Automation
