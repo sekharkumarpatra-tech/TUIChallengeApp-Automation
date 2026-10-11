@@ -1,0 +1,13 @@
+
+{
+  "validLogin": {
+    "username": "Test_sekhar",
+    "password": "Test@123",
+    "dob": "01082026"
+  },
+  "emptyLogin": {
+    "username": "",
+    "password": "",
+    "dob": ""
+  }
+}

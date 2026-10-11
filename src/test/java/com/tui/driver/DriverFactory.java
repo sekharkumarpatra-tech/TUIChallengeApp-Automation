@@ -5,10 +5,10 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
-
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
+import java.util.Objects;
+import com.tui.driver.DriverFactory;
+import org.openqa.selenium.Capabilities;
+import com.tui.driver.DriverFactory;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
@@ -25,11 +25,21 @@ public final class DriverFactory {
     public static void initializeDriver(
             String platformName,
             String appiumServerUrl,
-            DesiredCapabilities capabilities) throws MalformedURLException {
+            Capabilities capabilities)
+            throws MalformedURLException {
 
         if (DRIVER.get() != null) {
             throw new IllegalStateException(
                     "Driver is already initialized for this thread.");
+        }
+
+        Objects.requireNonNull(platformName, "Platform name cannot be null.");
+        Objects.requireNonNull(
+                capabilities, "Capabilities cannot be null.");
+
+        if (appiumServerUrl == null || appiumServerUrl.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Appium server URL cannot be empty.");
         }
 
         URL serverUrl = URI.create(appiumServerUrl).toURL();
@@ -38,17 +48,26 @@ public final class DriverFactory {
 
         if ("Android".equalsIgnoreCase(platformName)) {
             driver = new AndroidDriver(serverUrl, capabilities);
+
         } else if ("iOS".equalsIgnoreCase(platformName)) {
             driver = new IOSDriver(serverUrl, capabilities);
+
         } else {
             throw new IllegalArgumentException(
                     "Unsupported platform: " + platformName);
         }
 
-        driver.manage().timeouts()
-                .implicitlyWait(Duration.ZERO);
-
         DRIVER.set(driver);
+
+        try {
+            // Use explicit waits in page objects and utilities.
+            driver.manage().timeouts()
+                    .implicitlyWait(Duration.ZERO);
+
+        } catch (RuntimeException e) {
+            quitDriver();
+            throw e;
+        }
     }
 
     public static AppiumDriver getDriver() {
