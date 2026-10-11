@@ -1,4 +1,4 @@
-
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -36,7 +36,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Selenium: existing project version retained -->
+        <!-- Selenium -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
@@ -89,19 +89,18 @@
                 </configuration>
             </plugin>
 
-            <!-- Execute the Cucumber TestNG runner -->
+            <!-- Execute TestNG suite with the registered retry listener -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.2</version>
                 <configuration>
-                    <includes>
-                        <include>**/TestRunner.java</include>
-                    </includes>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+
                     <systemPropertyVariables>
-                        <cucumber.plugin>
-                            pretty, html:target/cucumber-reports/cucumber.html
-                        </cucumber.plugin>
+                        <cucumber.plugin>pretty,html:target/cucumber-reports/cucumber.html</cucumber.plugin>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

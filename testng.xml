@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="TUI Challenge Suite">
+    <listeners>
+        <listener class-name="com.tui.listeners.RetryListener"/>
+    </listeners>
+
+    <test name="Cucumber Mobile Tests">
+        <classes>
+            <class name="com.tui.runners.TestRunner"/>
+        </classes>
+    </test>
+</suite>
