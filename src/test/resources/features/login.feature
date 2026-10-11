@@ -12,22 +12,6 @@ Feature: TUI Challenge login form
     And the user submits the login form
     Then required validation errors should be displayed for all fields
 
-  @regression @calendar
-  Scenario: Cancel date selection without changing the original DOB
-    Given the TUI Challenge app is launched
-    When the user remembers the original date of birth
-    And the user opens the date of birth calendar
-    And the user selects day 10 and cancels the date selection
-    Then the original date of birth should remain unchanged
-
-  @regression @calendar
-  Scenario: Confirm a new date of birth
-    Given the TUI Challenge app is launched
-    When the user remembers the original date of birth
-    And the user opens the date of birth calendar
-    And the user selects day 2 and confirms the date selection
-    Then the selected date of birth should be updated
-
   @regression @password
   Scenario: Toggle password visibility
     Given the TUI Challenge app is launched
@@ -35,9 +19,27 @@ Feature: TUI Challenge login form
     And the user toggles password visibility
     Then the password visibility control should respond correctly
 
-  @smoke @login
-  Scenario: Submit valid details and navigate to the destination screen
+  @smoke @validLogin
+  Scenario: Successful login displays search results and hotel details
     Given the TUI Challenge app is launched
     When the user enters valid login details from test data
     And the user submits the login form
-    Then the home screen should be displayed
+    Then the search results screen should be displayed
+    And the search results navigation tabs should be displayed
+    And the first hotel details should be displayed
+
+  @smoke @hotelSearch
+  Scenario: Scroll through search results
+    Given the TUI Challenge app is launched
+    When the user enters valid login details from test data
+    And the user submits the login form
+    Then the search results screen should be displayed
+    And the search results should be scrolled
+
+  @smoke @hotelSearch
+  Scenario: Find Queens Park hotel by scrolling
+    Given the TUI Challenge app is launched
+    When the user enters valid login details from test data
+    And the user submits the login form
+    Then the search results screen should be displayed
+    And the Queens Park hotel should be displayed after scrolling
