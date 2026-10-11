@@ -1,0 +1,7 @@
+TC ID	Scenario / Test Case	Preconditions	Test Steps	Expected Result	Status
+TUI-TC-001	Verify Login screen title	App is installed and available.	1. Launch the app. 2. Verify the login screen title.	Login screen title is displayed correctly.	Pass
+TUI-TC-002	Validate all required fields	App is launched on the login screen.	1. Clear all login fields. 2. Submit the form. 3. Verify validation errors.	Required validation errors are displayed for all required fields.	Pass
+TUI-TC-003	Toggle password visibility	App is launched and the password field is available.	1. Enter a password from test data. 2. Toggle password visibility. 3. Verify the control responds correctly.	Password visibility toggles as expected.	Pass
+TUI-TC-004	Successful login displays search results and hotel details	Valid login test data is available.	1. Launch the app. 2. Enter valid login details. 3. Submit the form. 4. Verify search results, navigation tabs, and first hotel details.	Search results screen, navigation tabs, and first hotel details are displayed.	Pass
+TUI-TC-005	Scroll through search results	Valid login test data is available.	1. Launch the app. 2. Log in with valid details. 3. Verify the results screen. 4. Scroll through the results.	Search results are displayed and can be scrolled.	Pass
+TUI-TC-006	Find Queens Park hotel by scrolling	Valid login test data is available and search results can be opened.	1. Launch the app. 2. Log in with valid details. 3. Open search results. 4. Scroll until Queens Park hotel is found.	Queens Park hotel is displayed after scrolling.	Pass
