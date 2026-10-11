@@ -4,16 +4,14 @@ name: TUI Challenge - Maven Tests
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
   workflow_dispatch:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Java 21
@@ -25,11 +23,3 @@ jobs:
 
       - name: Run Maven tests
         run: mvn --batch-mode clean test
-
-      - name: Upload Cucumber report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: cucumber-html-report
-          path: target/cucumber-reports/cucumber.html
-          if-no-files-found: warn
