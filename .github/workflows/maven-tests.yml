@@ -22,4 +22,5 @@ jobs:
           cache: maven
 
       - name: Run Maven tests
+        shell: cmd
         run: mvn --batch-mode clean test
